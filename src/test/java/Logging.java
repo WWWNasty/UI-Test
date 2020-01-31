@@ -6,9 +6,9 @@ import org.junit.Test;
 import static com.codeborne.selenide.Selenide.*;
 
 
-public class Logining {
+public class Logging {
 
-    public void loginingUser() {
+    public void LoggingUser() {
         open("http://192.168.1.99:5002/login");
         ElementsCollection rdkm_user = $$(".login-box input");
         int rdkmUserElementNumber = 0;
