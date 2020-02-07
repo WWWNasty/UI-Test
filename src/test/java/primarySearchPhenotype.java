@@ -57,8 +57,9 @@ public class primarySearchPhenotype {
 
     private void Arrange() throws InterruptedException {
         Logging lg = new Logging();
-        lg.LoggingUser();
-        Thread.sleep(1000); //ждет закрытие формы логина
+        String loginValue = "rdkm_user";
+        String passwordValue = "admin";
+        lg.LoggingUser(loginValue, passwordValue);
         //открытие выпадающего меню ѕрофиль
         $("button[class='btn btn-secondary dropdown-toggle']").click();
         Thread.sleep(500);
@@ -89,16 +90,16 @@ public class primarySearchPhenotype {
         //открытие с фильтром ѕервичный поиск
         //Todo
         // $("ul[class = 'app-menu'] span li").click(); //открывает пункт меню пациенты
-        // $("form > div[1] > div > div[role = 'group'] > div").click(); //не ставит фильтр
         open("http://192.168.1.99:5002/patients?take=50&skip=0&orderby=desc&column=create_date&lastName=&createDateFrom&createDateTo&updateDateFrom&updateDateTo&status=1&operatorId=&description=&authorId=&donorId=&birthday&patientNumber=&tcCode=");
         Thread.sleep(5000);
         String gridContent = $("b").getText();
+        final int recordNumber = 3;
         if (gridContent.equals("0")) {      //проверка наличи€ записей в таблице доноров
             System.out.println("No data in grid");
         } else {
             System.out.println("Grid is contains data");
             SelenideElement table = $(".table-striped");
-            SelenideElement tr = table.$$("tr").get(2);
+            SelenideElement tr = table.$$("tr").get(recordNumber);
             SelenideElement td = tr.$$("td").get(0);
             SelenideElement a = td.$("a");
             a.click();
@@ -132,22 +133,23 @@ public class primarySearchPhenotype {
         $(By.id("weight")).setValue("");
         $(By.id("tweetbox")).setValue("");
         //затирка алеллий
+        String backspace = "\b\b\b\b\b\b";
         SelenideElement firstAlleleB = $(By.id("B*firstAllele"));
-        firstAlleleB.sendKeys("\b\b\b\b\b\b");
+        firstAlleleB.sendKeys(backspace);
         SelenideElement secondAlleleB = $(By.id("B*secondAllele"));
-        secondAlleleB.sendKeys("\b\b\b\b\b\b");
+        secondAlleleB.sendKeys(backspace);
         SelenideElement firstAlleleC = $(By.id("C*firstAllele"));
-        firstAlleleC.sendKeys("\b\b\b\b\b\b");
+        firstAlleleC.sendKeys(backspace);
         SelenideElement secondAlleleC = $(By.id("C*secondAllele"));
-        secondAlleleC.sendKeys("\b\b\b\b\b\b");
+        secondAlleleC.sendKeys(backspace);
         SelenideElement firstAlleleDRB1 = $(By.id("DRB1*firstAllele"));
-        firstAlleleDRB1.sendKeys("\b\b\b\b\b\b");
+        firstAlleleDRB1.sendKeys(backspace);
         SelenideElement secondAlleleDRB1 = $(By.id("DRB1*secondAllele"));
-        secondAlleleDRB1.sendKeys("\b\b\b\b\b\b");
+        secondAlleleDRB1.sendKeys(backspace);
         SelenideElement secondAlleleDQB1 = $(By.id("DQB1*secondAllele"));
-        secondAlleleDQB1.sendKeys("\b\b\b\b\b\b");
+        secondAlleleDQB1.sendKeys(backspace);
         SelenideElement firstAlleleDQB1 = $(By.id("DQB1*firstAllele"));
-        firstAlleleDQB1.sendKeys("\b\b\b\b\b\b");
+        firstAlleleDQB1.sendKeys(backspace);
     }
 
     private void setInput(String selector, String value) throws InterruptedException {
