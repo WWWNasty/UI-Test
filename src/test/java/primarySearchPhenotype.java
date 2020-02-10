@@ -1,3 +1,4 @@
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -12,43 +13,63 @@ public class primarySearchPhenotype {
         //Arrange
             Arrange();
         //Act
-        SelenideElement firstName = $("#first-name");
-        Thread.sleep(5000);
-        SelenideElement lastName = $("#last-name");
-        Thread.sleep(5000);
-        //проверка обязательного поля донора Фамилия
-        alleleFirstComplete();
-        ClearNotRequiredFields();//затирка необязательных полей
-        lastName.setValue("");//затирка фамилии
-        firstName.setValue("мя");
-        $("div[data-vv-as= 'Пол']").click();
-        setInput("#gender", "Мужской");
-        AlertOkValidation();
+        String gridContent = $("b").getText();
+        final int recordNumber = 3;
+        if (gridContent.equals("0")) {      //проверка наличия записей в таблице доноров
+            System.out.println("No data in grid");
+        }
+        else {
+            System.out.println("Grid is contains data");
+            SelenideElement table = $(".table-striped");
+            SelenideElement tr = table.$$("tr").get(recordNumber);
+            SelenideElement td = tr.$$("td").get(0);
+            SelenideElement a = td.$("a");
+            a.click();
+            Thread.sleep(5000);
 
-        //проверка обязательного поля донора имени
-        alleleFirstComplete();//заполнение только алелли А
-        ClearNotRequiredFields();//затирка необязательных полей
-        lastName.setValue("First_name");
-        firstName.setValue("");//затирка имени
-        setInput("#gender", "Мужской");
-        AlertOkValidation();
+            SelenideElement firstName = $("#first-name");
+            Thread.sleep(5000);
+            SelenideElement lastName = $("#last-name");
+            Thread.sleep(5000);
 
-        //проверка обязательного поля донора Пол
-        alleleFirstComplete();//заполнение только алелли А
-        ClearNotRequiredFields();//затирка необязательных полей
-        lastName.setValue("First_name");
-        firstName.setValue("мя");
-        setInput("#gender", "...");
-        AlertOkValidation();
+            //проверка обязательного поля донора Пол
+            //alleleFirstComplete();//заполнение только алелли А
+            ClearNotRequiredFields();//затирка необязательных полей
+            lastName.setValue("First_name");
+            firstName.setValue("мя");
+            $("div[data-vv-as= 'Пол']").click();
+            Thread.sleep(500);
+            setInput("#gender", "...");
+            ValidationAlert();
 
-        //проверка обязательности локуса
-        ClearNotRequiredFields();//затирка необязательных полей
-        $(By.id("A*firstAllele")).setValue("");
-        $(By.id("A*secondAllele")).setValue("");
-        AlertOkValidation();
+            //проверка обязательного поля донора Фамилия
+            //alleleFirstComplete();
+            //ClearNotRequiredFields();//затирка необязательных полей
+            lastName.setValue("");//затирка фамилии
+            firstName.setValue("мя");
+            $("div[data-vv-as= 'Пол']").click();
+            Thread.sleep(500);
+            setInput("#gender", "Мужской");
+            ValidationAlert();
+
+            //проверка обязательного поля донора имени
+           // alleleFirstComplete();//заполнение только алелли А
+            //ClearNotRequiredFields();//затирка необязательных полей
+            lastName.setValue("First_name");
+            firstName.setValue("");//затирка имени
+            //setInput("#gender", "Мужской");
+            ValidationAlert();
+
+            //проверка обязательности локуса
+            //ClearNotRequiredFields();//затирка необязательных полей
+            firstName.setValue("мя");
+            $(By.id("A*firstAllele")).setValue("");
+            $(By.id("A*secondAllele")).setValue("");
+            ValidationAlert();
+        }
     }
 
-    private void AlertOkValidation() throws InterruptedException {
+    private void ValidationAlert() throws InterruptedException {
         $(".offset-md-2").find("span button").click();
         Thread.sleep(500);
         $(".swal2-confirm").click();
@@ -88,23 +109,8 @@ public class primarySearchPhenotype {
         $$("button").findBy(text("Сохранить")).click();
         Thread.sleep(2000);
         //открытие с фильтром Первичный поиск
-        //Todo
-        // $("ul[class = 'app-menu'] span li").click(); //открывает пункт меню пациенты
         open("http://192.168.1.99:5002/patients?take=50&skip=0&orderby=desc&column=create_date&lastName=&createDateFrom&createDateTo&updateDateFrom&updateDateTo&status=1&operatorId=&description=&authorId=&donorId=&birthday&patientNumber=&tcCode=");
         Thread.sleep(5000);
-        String gridContent = $("b").getText();
-        final int recordNumber = 3;
-        if (gridContent.equals("0")) {      //проверка наличия записей в таблице доноров
-            System.out.println("No data in grid");
-        } else {
-            System.out.println("Grid is contains data");
-            SelenideElement table = $(".table-striped");
-            SelenideElement tr = table.$$("tr").get(recordNumber);
-            SelenideElement td = tr.$$("td").get(0);
-            SelenideElement a = td.$("a");
-            a.click();
-            Thread.sleep(5000);
-        }
     }
 
     private void alleleInput(By selector, String value){
@@ -123,12 +129,16 @@ public class primarySearchPhenotype {
         $(By.id("middle-name")).setValue("");
         Thread.sleep(1000);
         $("div[data-vv-as= 'Диагноз']").click();
+        Thread.sleep(500);
         setInput("#diagnosis","");
         $("div[data-vv-as= 'ЦМВ статус']").click();
+        Thread.sleep(500);
         setInput("#CmvStatus","");
         $("div[data-vv-as= 'Группа крови']").click();
+        Thread.sleep(500);
         setInput("#BloodType", "");
         $("div[data-vv-as= 'Резус фактор']").click();
+        Thread.sleep(500);
         setInput("#Rh", "");
         $(By.id("weight")).setValue("");
         $(By.id("tweetbox")).setValue("");
